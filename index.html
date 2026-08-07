@@ -4,25 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Music Player</title>
-    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css"/>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="player-container">
+        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle dark mode" title="Switch to dark mode">
+            <i class="fas fa-moon"></i>
+        </button>
         <!-- Song -->
         <div class="img-container">
-            <img src="img/jacinto-1.jpg" alt="Album Art">
+            <img src="img/default-retro.svg" alt="Album Art">
         </div>
-        <h2 id="title">Elcetric Chill Machine</h2>
-        <h3 id="artist">Jacinto</h3>
-        <audio src="music/jacinto-1.mp3"></audio>
+        <h2 id="title">Select Local Songs</h2>
+        <h3 id="artist">No file loaded</h3>
+        <audio></audio>
         <!-- Progress -->
         <div class="progress-container" id="progress-container">
             <div class="progress" id="progress"></div>
             <div class="duration-wrapper">
                 <span id="current-time">0:00</span>
-                <span id="duration">2:06</span>
+                <span id="duration">0:00</span>
             </div>
         </div>
         <!-- Controls -->
@@ -31,8 +34,21 @@
             <i class="fas fa-play main-button" id="play" title="Play"></i>
             <i class="fas fa-forward" id="next" title="Next"></i>
         </div>
+        <div class="local-controls">
+            <button id="import-btn" type="button">Import Songs</button>
+            <button id="import-folder-btn" type="button">Import Folder</button>
+            <button id="clear-btn" type="button">Clear Queue</button>
+            <input id="file-input" type="file" accept="audio/*,image/*" multiple hidden>
+            <input id="folder-input" type="file" accept="audio/*,image/*" webkitdirectory directory multiple hidden>
+            <p id="queue-info">Queue: 0 songs</p>
+        </div>
+        <div class="queue-panel">
+            <h4>Song Queue</h4>
+            <ul id="queue-list"></ul>
+        </div>
     </div>
     <!-- Script -->
-    <script src="script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.7/jsmediatags.min.js" defer></script>
+    <script src="script.js" defer></script>
 </body>
 </html>

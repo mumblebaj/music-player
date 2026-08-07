@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" role="img" aria-label="Calming retro album art">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#d9e4f0"/>
+      <stop offset="100%" stop-color="#9ab0c8"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="50%" cy="42%" r="38%">
+      <stop offset="0%" stop-color="#f6e7cb"/>
+      <stop offset="100%" stop-color="#d1c1a4"/>
+    </radialGradient>
+    <linearGradient id="hillBack" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#738aa3"/>
+      <stop offset="100%" stop-color="#607790"/>
+    </linearGradient>
+    <linearGradient id="hillFront" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#50647a"/>
+      <stop offset="100%" stop-color="#42566c"/>
+    </linearGradient>
+    <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#88a9c4"/>
+      <stop offset="100%" stop-color="#6b8ca7"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="1200" fill="url(#sky)"/>
+
+  <circle cx="600" cy="470" r="190" fill="url(#sun)" opacity="0.9"/>
+
+  <rect x="0" y="620" width="1200" height="580" fill="url(#water)"/>
+
+  <g opacity="0.22" stroke="#eaf3fb" stroke-width="10">
+    <line x1="120" y1="690" x2="1080" y2="690"/>
+    <line x1="80" y1="750" x2="1120" y2="750"/>
+    <line x1="120" y1="810" x2="1080" y2="810"/>
+    <line x1="90" y1="870" x2="1110" y2="870"/>
+    <line x1="120" y1="930" x2="1080" y2="930"/>
+  </g>
+
+  <path d="M0 700 C160 620, 310 600, 490 650 C650 695, 760 705, 910 665 C1030 630, 1130 615, 1200 640 L1200 1200 L0 1200 Z" fill="url(#hillBack)"/>
+  <path d="M0 790 C180 730, 350 720, 530 760 C710 800, 860 825, 1040 790 C1120 775, 1165 760, 1200 748 L1200 1200 L0 1200 Z" fill="url(#hillFront)"/>
+
+  <g opacity="0.38" stroke="#f5efe3" stroke-width="6" stroke-linecap="round">
+    <line x1="430" y1="430" x2="770" y2="430"/>
+    <line x1="450" y1="470" x2="750" y2="470"/>
+    <line x1="475" y1="510" x2="725" y2="510"/>
+  </g>
+
+</svg>

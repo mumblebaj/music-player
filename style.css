@@ -1,6 +1,48 @@
 /* Images created by: https://unsplash.com/@pawel_czerwinski */
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;700&display=swap');
 
+:root {
+  --page-bg: #c9ced3;
+  --player-bg: #e7e7e7;
+  --text-primary: #1e1e1e;
+  --text-muted: #555;
+  --progress-track: #fff;
+  --progress-fill: #242323;
+  --control-icon: rgb(129, 129, 129);
+  --control-hover: brightness(80%);
+  --button-bg: #242323;
+  --button-text: #fff;
+  --panel-bg: #f7f7f7;
+  --queue-item-bg: #ececec;
+  --queue-item-hover: #dcdcdc;
+  --queue-item-active-bg: #242323;
+  --queue-item-active-text: #fff;
+  --theme-toggle-bg: #ffffff;
+  --theme-toggle-text: #232323;
+  --theme-toggle-border: rgba(0, 0, 0, 0.12);
+}
+
+body.theme-dark {
+  --page-bg: #0f1318;
+  --player-bg: #1c232b;
+  --text-primary: #eef3f8;
+  --text-muted: #b3beca;
+  --progress-track: #2b3440;
+  --progress-fill: #8ec5ff;
+  --control-icon: #a6b6c8;
+  --control-hover: brightness(115%);
+  --button-bg: #31465a;
+  --button-text: #f3f9ff;
+  --panel-bg: #141b22;
+  --queue-item-bg: #233040;
+  --queue-item-hover: #2b3c4f;
+  --queue-item-active-bg: #6eb3ff;
+  --queue-item-active-text: #111a22;
+  --theme-toggle-bg: #2b3a49;
+  --theme-toggle-text: #f3f9ff;
+  --theme-toggle-border: rgba(255, 255, 255, 0.16);
+}
+
 html {
   box-sizing: border-box;
 }
@@ -8,32 +50,69 @@ html {
 body {
   margin: 0;
   min-height: 100vh;
-  background: #c9ced3;
+  min-height: 100svh;
+  background: var(--page-bg);
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
+  padding: 24px 0 40px;
+  overflow-y: auto;
   font-family: Ubuntu, sans-serif;
   font-size: 12px;
 }
 
+@supports (height: 100dvh) {
+  body {
+    min-height: 100dvh;
+  }
+}
+
 .player-container {
-  height: 500px;
+  min-height: 700px;
   width: 400px;
-  background: #e7e7e7;
+  margin: 36px 0 20px;
+  background: var(--player-bg);
+  color: var(--text-primary);
   border-radius: 20px;
   -webkit-border-radius: 20px;
   -moz-border-radius: 20px;
   -ms-border-radius: 20px;
   -o-border-radius: 20px;
   box-shadow: 0 15px 30px 5px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.theme-toggle {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  border: 1px solid var(--theme-toggle-border);
+  background: var(--theme-toggle-bg);
+  color: var(--theme-toggle-text);
+  border-radius: 999px;
+  width: 34px;
+  height: 34px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.theme-toggle:hover {
+  filter: brightness(95%);
+  -webkit-filter: brightness(95%);
+}
+
+.theme-toggle .fas {
+  margin-right: 0;
+  font-size: 14px;
+  color: inherit;
 }
 
 .img-container {
-  height: 300px;
-  width: 300px;
-  position: relative;
-  top: -50px;
-  left: 50px;
+  height: 270px;
+  width: 270px;
+  margin: -40px auto 0;
 }
 
 .img-container img {
@@ -50,13 +129,13 @@ body {
 
 
 h2 {
-  font-size: 25px;
+  font-size: 12px;
   text-align: center;
-  margin: 0;
+  margin: 14px 0 0;
 }
 
 h3 {
-  font-size: 20px;
+  font-size: 15px;
   text-align: center;
   font-weight: 400;
   margin: 5px 0 0;
@@ -64,7 +143,7 @@ h3 {
 
 /* Progress */
 .progress-container {
-  background: #fff;
+  background: var(--progress-track);
   border-radius: 5px;
   cursor: pointer;
   margin: 40px 20px;
@@ -73,7 +152,7 @@ h3 {
 }
 
 .progress {
-  background: #242323;
+  background: var(--progress-fill);
   border-radius: 5px;
   height: 100%;
   /* change this to show progress */
@@ -91,22 +170,22 @@ h3 {
 /* Controls */
 .player-controls {
   position: relative;
-  top: -15px;
+  top: -20px;
   left: 120px;
   width: 200px;
 }
 
 .fas {
   font-size: 30px;
-  color: rgb(129, 129, 129);
+  color: var(--control-icon);
   margin-right: 30px;
   cursor: pointer;
   user-select: none;
 }
 
 .fas:hover {
-  filter: brightness(80%);
-  -webkit-filter: brightness(80%);
+  filter: var(--control-hover);
+  -webkit-filter: var(--control-hover);
 }
 
 
@@ -117,26 +196,138 @@ h3 {
   top: 3px;
 }
 
+.local-controls {
+  margin: -8px 20px 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.local-controls button {
+  border: 0;
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--button-text);
+  background: var(--button-bg);
+  cursor: pointer;
+}
+
+.local-controls button:hover {
+  filter: brightness(85%);
+  -webkit-filter: brightness(85%);
+}
+
+#queue-info {
+  width: 100%;
+  margin: 2px 0 0;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.queue-panel {
+  margin: 12px 20px 16px;
+  padding: 10px;
+  border-radius: 12px;
+  background: var(--panel-bg);
+}
+
+.queue-panel h4 {
+  margin: 0 0 8px;
+  font-size: 13px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+#queue-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-height: 140px;
+  overflow-y: auto;
+}
+
+#queue-list li {
+  margin: 0;
+}
+
+.queue-item {
+  width: 100%;
+  border: 0;
+  border-radius: 8px;
+  margin-bottom: 6px;
+  padding: 8px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: inherit;
+  font-size: 12px;
+  text-align: left;
+  color: var(--text-primary);
+  background: var(--queue-item-bg);
+  cursor: pointer;
+}
+
+.queue-item:hover {
+  background: var(--queue-item-hover);
+}
+
+.queue-item.active {
+  color: var(--queue-item-active-text);
+  background: var(--queue-item-active-bg);
+}
+
+.queue-item-title {
+  max-width: 62%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.queue-item-artist {
+  max-width: 34%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0.85;
+}
+
 /* Media Query: iPhone (Vertical) */
 @media screen and (max-width: 376px) {
 .player-container {
   width: 95vw;
+  min-height: 740px;
+  margin-top: 30px;
 }
 
   .img-container {
-    left: 29px;
+    margin-top: -42px;
   }
 
   h2 {
-    font-size: 20px;
+    font-size: 11.25px;
   }
 
   h3 {
-    font-size: 15px;
+    font-size: 11.25px;
   }
 
   .player-controls {
     top: -10px;
     left: 100px;
+  }
+
+  .local-controls {
+    margin-top: 0;
+  }
+
+  #queue-list {
+    max-height: 170px;
   }
 }
