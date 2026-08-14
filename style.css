@@ -173,18 +173,22 @@ h3 {
 .player-controls {
   position: relative;
   top: -20px;
+  width: calc(100% - 70px);
+  margin: 0 auto;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  gap: 22px;
+  gap: 10px;
 }
 
-.player-controls .fas {
-  margin-right: 0;
+.transport-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
 .fas {
-  font-size: 30px;
+  font-size: 26px;
   color: var(--control-icon);
   margin-right: 30px;
   cursor: pointer;
@@ -199,9 +203,18 @@ h3 {
 
 
 .main-button {
-  font-size: 40px;
+  font-size: 34px;
   position: relative;
   top: 3px;
+}
+
+.side-control {
+  font-size: 22px;
+}
+
+.transport-controls .fas,
+.player-controls .side-control {
+  margin-right: 0;
 }
 
 .player-controls .toggle-active {
@@ -332,7 +345,15 @@ h3 {
 
   .player-controls {
     top: -10px;
-    gap: 18px;
+    width: calc(100% - 44px);
+  }
+
+  .transport-controls {
+    gap: 12px;
+  }
+
+  .side-control {
+    font-size: 20px;
   }
 
   .local-controls {
