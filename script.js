@@ -6,9 +6,11 @@ const progressContainer = document.getElementById('progress-container');
 const progress = document.getElementById('progress');
 const currentTimeEl = document.getElementById('current-time');
 const durationEl = document.getElementById('duration');
+const repeatBtn = document.getElementById('repeat');
 const prevBtn = document.getElementById('prev');
 const playBtn = document.getElementById('play');
 const nextBtn = document.getElementById('next');
+const shuffleBtn = document.getElementById('shuffle');
 const importBtn = document.getElementById('import-btn');
 const importFolderBtn = document.getElementById('import-folder-btn');
 const clearBtn = document.getElementById('clear-btn');
@@ -27,7 +29,43 @@ const themeStorageKey = 'musicPlayerTheme';
 let songs = [];
 let songIndex = 0;
 let isPlaying = false;
+let repeatEnabled = false;
+let shuffleEnabled = false;
+let shuffleQueue = [];
 const managedObjectUrls = new Set();
+
+function resetShuffleQueue() {
+    if (!shuffleEnabled || songs.length <= 1) {
+        shuffleQueue = [];
+        return;
+    }
+
+    const indices = songs
+        .map((_, index) => index)
+        .filter(index => index !== songIndex);
+
+    for (let i = indices.length - 1; i > 0; i -= 1) {
+        const randomIndex = Math.floor(Math.random() * (i + 1));
+        [indices[i], indices[randomIndex]] = [indices[randomIndex], indices[i]];
+    }
+
+    shuffleQueue = indices;
+}
+
+function updateToggleButtonState(button, isEnabled, onLabel, offLabel) {
+    if (!button) {
+        return;
+    }
+
+    button.classList.toggle('toggle-active', isEnabled);
+    button.setAttribute('title', isEnabled ? onLabel : offLabel);
+    button.setAttribute('aria-pressed', String(isEnabled));
+}
+
+function updateModeButtons() {
+    updateToggleButtonState(repeatBtn, repeatEnabled, 'Repeat: On', 'Repeat: Off');
+    updateToggleButtonState(shuffleBtn, shuffleEnabled, 'Shuffle: On', 'Shuffle: Off');
+}
 
 function setTheme(mode) {
     const darkModeEnabled = mode === 'dark';
@@ -305,6 +343,57 @@ function pauseSong() {
     music.pause();
 }
 
+function getNextShuffledIndex(allowLoop) {
+    if (songs.length === 0) {
+        return null;
+    }
+
+    if (songs.length === 1) {
+        return allowLoop ? 0 : null;
+    }
+
+    if (shuffleQueue.length === 0) {
+        if (!allowLoop) {
+            return null;
+        }
+        resetShuffleQueue();
+    }
+
+    const nextIndex = shuffleQueue.shift();
+    return Number.isInteger(nextIndex) ? nextIndex : null;
+}
+
+function nextSong(allowLoop = true) {
+    if (!hasSongs()) {
+        return false;
+    }
+
+    let nextIndex = null;
+
+    if (shuffleEnabled) {
+        nextIndex = getNextShuffledIndex(allowLoop);
+    } else if (songIndex < songs.length - 1) {
+        nextIndex = songIndex + 1;
+    } else if (allowLoop) {
+        nextIndex = 0;
+    }
+
+    if (nextIndex === null) {
+        return false;
+    }
+
+    songIndex = nextIndex;
+    loadSong(songs[songIndex]);
+    renderQueue();
+    playSong();
+
+    if (shuffleEnabled) {
+        resetShuffleQueue();
+    }
+
+    return true;
+}
+
 function prevSong() {
     if (!hasSongs()) {
         return;
@@ -314,17 +403,24 @@ function prevSong() {
     loadSong(songs[songIndex]);
     renderQueue();
     playSong();
+
+    if (shuffleEnabled) {
+        resetShuffleQueue();
+    }
 }
 
-function nextSong() {
-    if (!hasSongs()) {
+function handleSongEnded() {
+    const shouldLoop = repeatEnabled;
+    const didAdvance = nextSong(shouldLoop);
+
+    if (didAdvance) {
         return;
     }
 
-    songIndex = (songIndex + 1) % songs.length;
-    loadSong(songs[songIndex]);
-    renderQueue();
-    playSong();
+    isPlaying = false;
+    updatePlayButton(true);
+    music.currentTime = 0;
+    resetTimeDisplay();
 }
 
 function updateProgressBar(e) {
@@ -368,6 +464,7 @@ function clearQueue() {
 
     songs = [];
     songIndex = 0;
+    shuffleQueue = [];
     revokeAllManagedObjectUrls();
     updateQueueInfo();
     renderQueue();
@@ -396,20 +493,41 @@ async function handleFileSelection(e) {
     updateQueueInfo();
     renderQueue();
 
+    if (shuffleEnabled) {
+        resetShuffleQueue();
+    }
+
     if (wasEmpty) {
         songIndex = 0;
         loadSong(songs[songIndex]);
         renderQueue();
         playSong();
+
+        if (shuffleEnabled) {
+            resetShuffleQueue();
+        }
     }
 
     fileInput.value = '';
 }
 
+repeatBtn.addEventListener('click', () => {
+    repeatEnabled = !repeatEnabled;
+    updateModeButtons();
+});
+
+shuffleBtn.addEventListener('click', () => {
+    shuffleEnabled = !shuffleEnabled;
+    resetShuffleQueue();
+    updateModeButtons();
+});
+
 playBtn.addEventListener('click', () => (isPlaying ? pauseSong() : playSong()));
 prevBtn.addEventListener('click', prevSong);
-nextBtn.addEventListener('click', nextSong);
-music.addEventListener('ended', nextSong);
+nextBtn.addEventListener('click', () => {
+    nextSong(true);
+});
+music.addEventListener('ended', handleSongEnded);
 music.addEventListener('timeupdate', updateProgressBar);
 progressContainer.addEventListener('click', setProgressBar);
 importBtn.addEventListener('click', () => fileInput.click());
@@ -430,6 +548,7 @@ updateQueueInfo();
 renderQueue();
 renderEmptyState();
 initializeTheme();
+updateModeButtons();
 
 image.addEventListener('error', () => {
     image.src = defaultCover;

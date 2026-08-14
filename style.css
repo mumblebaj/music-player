@@ -9,6 +9,7 @@
   --progress-track: #fff;
   --progress-fill: #242323;
   --control-icon: rgb(129, 129, 129);
+  --control-active: #242323;
   --control-hover: brightness(80%);
   --button-bg: #242323;
   --button-text: #fff;
@@ -30,6 +31,7 @@ body.theme-dark {
   --progress-track: #2b3440;
   --progress-fill: #8ec5ff;
   --control-icon: #a6b6c8;
+  --control-active: #8ec5ff;
   --control-hover: brightness(115%);
   --button-bg: #31465a;
   --button-text: #f3f9ff;
@@ -171,8 +173,14 @@ h3 {
 .player-controls {
   position: relative;
   top: -20px;
-  left: 120px;
-  width: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 22px;
+}
+
+.player-controls .fas {
+  margin-right: 0;
 }
 
 .fas {
@@ -194,6 +202,10 @@ h3 {
   font-size: 40px;
   position: relative;
   top: 3px;
+}
+
+.player-controls .toggle-active {
+  color: var(--control-active);
 }
 
 .local-controls {
@@ -320,7 +332,7 @@ h3 {
 
   .player-controls {
     top: -10px;
-    left: 100px;
+    gap: 18px;
   }
 
   .local-controls {
