@@ -34,6 +34,13 @@ let shuffleEnabled = false;
 let shuffleQueue = [];
 const managedObjectUrls = new Set();
 
+function shuffleIndices(indices) {
+    for (let i = indices.length - 1; i > 0; i -= 1) {
+        const randomIndex = Math.floor(Math.random() * (i + 1));
+        [indices[i], indices[randomIndex]] = [indices[randomIndex], indices[i]];
+    }
+}
+
 function resetShuffleQueue() {
     if (!shuffleEnabled || songs.length <= 1) {
         shuffleQueue = [];
@@ -44,12 +51,13 @@ function resetShuffleQueue() {
         .map((_, index) => index)
         .filter(index => index !== songIndex);
 
-    for (let i = indices.length - 1; i > 0; i -= 1) {
-        const randomIndex = Math.floor(Math.random() * (i + 1));
-        [indices[i], indices[randomIndex]] = [indices[randomIndex], indices[i]];
-    }
+    shuffleIndices(indices);
 
     shuffleQueue = indices;
+}
+
+function removeSongFromShuffleQueue(indexToRemove) {
+    shuffleQueue = shuffleQueue.filter(index => index !== indexToRemove);
 }
 
 function updateToggleButtonState(button, isEnabled, onLabel, offLabel) {
@@ -135,6 +143,9 @@ function renderQueue() {
         button.append(itemTitle, itemArtist);
         button.addEventListener('click', () => {
             songIndex = index;
+            if (shuffleEnabled) {
+                removeSongFromShuffleQueue(songIndex);
+            }
             loadSong(songs[songIndex]);
             renderQueue();
             playSong();
@@ -383,13 +394,12 @@ function nextSong(allowLoop = true) {
     }
 
     songIndex = nextIndex;
+    if (shuffleEnabled) {
+        removeSongFromShuffleQueue(songIndex);
+    }
     loadSong(songs[songIndex]);
     renderQueue();
     playSong();
-
-    if (shuffleEnabled) {
-        resetShuffleQueue();
-    }
 
     return true;
 }
@@ -400,13 +410,12 @@ function prevSong() {
     }
 
     songIndex = (songIndex - 1 + songs.length) % songs.length;
+    if (shuffleEnabled) {
+        removeSongFromShuffleQueue(songIndex);
+    }
     loadSong(songs[songIndex]);
     renderQueue();
     playSong();
-
-    if (shuffleEnabled) {
-        resetShuffleQueue();
-    }
 }
 
 function handleSongEnded() {
@@ -493,10 +502,6 @@ async function handleFileSelection(e) {
     updateQueueInfo();
     renderQueue();
 
-    if (shuffleEnabled) {
-        resetShuffleQueue();
-    }
-
     if (wasEmpty) {
         songIndex = 0;
         loadSong(songs[songIndex]);
@@ -506,6 +511,10 @@ async function handleFileSelection(e) {
         if (shuffleEnabled) {
             resetShuffleQueue();
         }
+    } else if (shuffleEnabled) {
+        const newIndices = validSongs.map((_, offset) => songs.length - validSongs.length + offset);
+        shuffleIndices(newIndices);
+        shuffleQueue.push(...newIndices);
     }
 
     fileInput.value = '';
